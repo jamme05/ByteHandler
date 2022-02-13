@@ -5,6 +5,10 @@ class ByteArray{
      * @type {Byte[]}
      */
     bytes = [];
+
+    constructor(){
+        
+    }
 }
 
 var test = new Byte(30);
