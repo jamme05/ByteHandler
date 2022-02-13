@@ -1,0 +1,20 @@
+{
+  "name": "byte-handler",
+  "version": "0.1.0",
+  "description": "A simple bytehandler, hopefully helpfull for anyone working with bits and bytes,",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamme05/ByteHandler.git"
+  },
+  "author": "jamme05",
+  "license": "MIT",
+  "keywords": ["javascript","js","binary","bit","bits","byte","bytes","read","write"],
+  "bugs": {
+    "url": "https://github.com/jamme05/ByteHandler/issues"
+  },
+  "homepage": "https://github.com/jamme05/ByteHandler#readme"
+}
