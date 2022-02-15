@@ -63,12 +63,21 @@ module.exports = class Byte{
 
     /**
      * 
-     * @param {array | *} arr - The array you want to check if its a byte.
+     * @param {*} arr - The array you want to check if its a byte.
      */
     static isArrayByte(arr){
         if(!Array.isArray(arr)) return false;
         else if(arr.length > 8) return false;
-        else return true;
+        else {
+            var res = true;
+            for(let i of arr){
+                if(!bitExamples.includes(i)){
+                    res = false;
+                    break;
+                }
+            }
+            return res;
+        };
     }
 
     /**
