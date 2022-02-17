@@ -4,7 +4,7 @@ const ByteArray = require("./classes/ByteArray")
 /**
  * 
  * @param {Buffer | Byte[] | (0 | "1" | "0" | 1)[][]} buf 
- * @returns {ByteArray} - ByteArray made from input.
+ * @returns {ByteArray}ByteArray made from input.
  */
 function byteHandler(buf){
     return new ByteArray(buf);

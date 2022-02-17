@@ -5,6 +5,19 @@ const bitExamples = ['1','0',1,0];
 
 module.exports = class Byte{
     value;
+
+    get value(){ return this.value; }
+
+    set value(val){
+        if(typeof val != 'number') throw new TypeError(`${typeof val} is the wrong type, must be number.`);
+        this.value = val || 0;
+        var small = this.value.toString(2);
+
+        if(small.length > 8) throw new Error('Cannot handle value higher than 8 bits.');
+
+        let str = "0000000".substring(0,7-(small.length-1))+small;
+        this.bits = str.split('');
+    }
     /**
      * @type {('1'|'0')[]}
      */
@@ -22,19 +35,18 @@ module.exports = class Byte{
                 if(!bitExamples.includes(bit)) throw new Error(`Wrong value, must be one of 1,0,"1","0".`);
                 this.bits[i] = `${bit}`;
             }
+            this.value = parseInt(this.toString(),2);
         }
-
-        console.log(val);
     }
 
     /**
      * 
-     * @param {Number} val - The number to get a byte from.
+     * @param {Number} val - The number to get a byte from. Defaults to 0.
      */
     constructor(val){
         if(typeof val != 'number') throw new TypeError(`${typeof val} is the wrong type, must be number.`);
         this.value = val || 0;
-        var small = val.toString(2);
+        var small = this.value.toString(2);
 
         if(small.length > 8) throw new Error('Cannot handle value higher than 8 bits.');
 
@@ -110,11 +122,25 @@ module.exports = class Byte{
         return this.bits;
     }
 
-    toString(){
-        return this.bits.join('');
+    /**
+     * 
+     * @param {0|1} [func] The way it converts it to text. Defaults to 0.
+     * 
+     * 0 = ASCII/utf-8,
+     * 1 = Binary
+     * @returns 
+     */
+    toString(func){
+        func = func || 0;
+        if(func == 1) return this.bits.join('');
+        return String.fromCharCode(parseInt(this.bits.join(''),2));
     }
 
-    toInt(){
+    toBuffer(){
+        return Buffer.alloc(1,this.valueOf());
+    }
+
+    valueOf(){
         return parseInt(this.bits.join(''),2);
     }
 

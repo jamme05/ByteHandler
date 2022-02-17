@@ -6,6 +6,14 @@ module.exports = class ByteArray{
      */
     bytes = [];
 
+    /**
+     * @type {Number[]}
+     */
+    values = [];
+    get values(){
+        return this.values;
+    }
+
     length;
     get length(){
         return this.bytes.length;
@@ -16,19 +24,18 @@ module.exports = class ByteArray{
     }
 
     /**
-     * @param {Byte[] | ('1'|'0'|1|0)[][]} buf
+     * @param {number[]| Byte[] | ('1'|'0'|1|0)[][]} buf
      */
     set bytes(buf){
         if(Buffer.isBuffer(buf)){
             for(let num of buf) this.bytes.push(new Byte(num));
         }else if(Array.isArray(buf)){
             for(let val of buf){
-                if(typeof val == 'number'){
-                    try{
-                        this.bytes.push(new Byte(val));
-                    }catch {continue};
-                }else if(Byte.isByteClass(val)) this.bytes.push(val);
-                else if(Byte.isArrayByte(val)) this.bytes.push(Byte.fromArray(val));
+                try{
+                    if(typeof val == 'number'){this.bytes.push(new Byte(val)); this.values.push(val);}
+                    else if(Byte.isByteClass(val)) {this.bytes.push(val);this.values.push(val.valueOf());}
+                    else if(Byte.isArrayByte(val)) {var byte=Byte.fromArray(val);this.bytes.push(byte);this.values.push(byte.valueOf())}
+                }catch{continue}
             }
         }
     }
@@ -43,36 +50,73 @@ module.exports = class ByteArray{
             for(let num of buf) this.bytes.push(new Byte(num));
         }else if(Array.isArray(buf)){
             for(let val of buf){
-                if(typeof val == 'number'){
-                    try{
-                        this.bytes.push(new Byte(val));
-                    }catch {continue};
-                }else if(Byte.isByteClass(val)) this.bytes.push(val);
-                else if(Byte.isArrayByte(val)) this.bytes.push(Byte.fromArray(val));
+                try{
+                    if(typeof val == 'number'){this.bytes.push(new Byte(val)); this.values.push(val);}
+                    else if(Byte.isByteClass(val)) {this.bytes.push(val);this.values.push(val.valueOf());}
+                    else if(Byte.isArrayByte(val)) {var byte=Byte.fromArray(val);this.bytes.push(byte);this.values.push(byte.valueOf())}
+                }catch{continue}
             }
         }
     }
 
     /**
      * 
-     * @param {Byte|('1'|'0'|1|0)[]} byte - The byte object.
+     * @param {number|Byte|('1'|'0'|1|0)[]|} byte - The byte object.
      */
     add(byte){
-        if(typeof val == 'number'){
-            try{
-                this.bytes.push(new Byte(byte));
-            }catch {continue};
-        }else if(Byte.isByteClass(byte)) return byte;
-        else if(Byte.isArrayByte(byte)) return Byte.fromArray(byte);
-        else throw new TypeError(`Cannot be ${typeof byte}. Must be either array or Byte.`);
+        if(typeof val == 'number'){this.bytes.push(new Byte(val)); this.values.push(val);}
+        else if(Byte.isByteClass(val)) {this.bytes.push(val);this.values.push(val.valueOf());}
+        else if(Byte.isArrayByte(val)) {var byte=Byte.fromArray(val);this.bytes.push(byte);this.values.push(byte.valueOf())}
+        else throw new TypeError(`Cannot be ${typeof byte}. Must be either number[] or Byte.`);
     }
 
     /**
      * 
-     * @param {number} i - The index of the byte.
+     * @param {Number} i The index to remove a Byte from.
+     */
+    remove(i){
+        this.bytes.splice(i,1);
+    }
+
+    /**
+     * 
+     * @param {Number} i The index to remove a Byte from.
+     */
+    pop(i){
+        var b = this.bytes[i];
+        if(b === undefined) return undefined;
+        this.bytes.splice(i,1);
+        return b;
+    }
+
+    /**
+     * 
+     * @param {number} i The index of the byte.
+     * @returns {Byte|undefined} The Byte from the index, returns undefined if invalid index.
      */
     get(i){
         return this.bytes[i];
+    }
+
+    /**
+     * 
+     * @returns {Buffer} A Buffer made from bytes.
+     */
+    toBuffer(){
+        return Buffer.from(this.values);
+    }
+
+    /**
+     * 
+     * @param {string} [sep] - The seperator.
+     */
+    toBinary(sep=''){
+        var bits = '';
+        for(var i in this.bytes){
+            var byte = this.bytes[i].toString(1);
+            if(i != 0) bits = bits+sep+byte;
+            else bits = byte;
+        }
     }
 
     /**
@@ -83,6 +127,6 @@ module.exports = class ByteArray{
     toString(sep){
         sep = sep || '';
         if(typeof sep != 'string') sep = `${sep}`;
-        return this.bytes.join(sep);
+        return this.bytes.join(sep);      
     }
 }
